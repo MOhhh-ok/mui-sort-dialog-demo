@@ -1,5 +1,7 @@
 import { MuiSortDialog, MuiSortDialogPayload, MuiSortDialogRenderContainerProps, MuiSortDialogRenderDialogActionsProps, MuiSortDialogRenderItemProps } from '@masa-dev/mui-sort-dialog';
+import { Paper } from '@mui/material';
 import { DialogsProvider, useDialogs } from '@toolpad/core';
+import { CSSProperties } from 'react';
 
 type ItemType = {
     name: string;
@@ -14,7 +16,7 @@ const items: ItemType[] = [
 
 function App() {
     return <DialogsProvider>
-        <div style={{ display: 'flex', gap: 3 }}>
+        <div style={{ display: 'flex', gap: 3, justifyContent: "center" }}>
             <Minimum />
             <WithRenderItem />
             <WithRenderContainer />
@@ -39,9 +41,12 @@ function WithRenderItem() {
     const dlgs = useDialogs();
 
     const handleClick = async () => {
-        const renderItem = (props: MuiSortDialogRenderItemProps<ItemType>) => <div {...props.handlerProps} style={{ border: "1px solid #aaa", ...props.handlerProps.style }}>
-            {props.item.name}:{props.item.age}
-        </div>
+        const style: CSSProperties = { border: "1px solid #aaa", padding: "0.5em 1em" }
+        const renderItem = (props: MuiSortDialogRenderItemProps<ItemType>) => <Paper sx={{ ...style, ...props.handlerProps.style }}>
+            <div {...props.handlerProps} style={{ cursor: "pointer", background: "#ddd", marginBottom: "2em" }}>++ DRAG ME ++</div>
+            <span style={{ fontSize: "1.2em" }}>{props.item.name}:</span>
+            <span style={{ color: "green", fontSize: "0.8em", fontWeight: "bold" }}>{props.item.age}</span>
+        </Paper>
         const payload: MuiSortDialogPayload<ItemType> = { items, renderItem }
         const res = await dlgs.open(MuiSortDialog<ItemType>, payload)
         dlgs.alert(JSON.stringify(res), { title: 'Sort Result' })
